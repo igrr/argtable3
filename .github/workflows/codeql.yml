@@ -1,0 +1,31 @@
+name: CodeQL
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - codeql
+
+jobs:
+  build:
+    name: Run CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: cpp
+          queries: +security-and-quality
+      - run: |
+          mkdir -p build
+          cmake -B build
+          cmake --build build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
